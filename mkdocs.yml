@@ -1,0 +1,41 @@
+site_name: Goblin Tech documentation
+
+nav:
+  - Home: index.md
+  - Getting started: download.md
+  - Goblin Deploy Tool: goblinDeployTool.md
+  - Environments: environments.md
+  - Networking guide: networkGuide.md
+  - Features reference:
+    - Accounts: ./api/accounts.md
+    - Account linkage: ./api/accountsLinks.md
+    - Profiles: ./api/profiles.md
+    - Leaderboard and records: ./api/leaderboard.md
+    - Matchmaking: ./api/matchmaking.md
+    - Tickets: ./api/tickets.md
+    - Social network: ./api/socialNetwork.md
+    - Utils: ./api/utils.md
+    - PvE: ./api/pve.md
+    - PvP: ./api/pvp.md
+    - Cloud functions: ./api/cloudFunctions.md
+    - Cloud functions API Reference: ./api/cfProgrammingReference.md
+    - Debuggning cloud functions: ./api/debuggingCloudFunctions.md
+    - Getting started with cloud functions: ./api/examples.md
+  - Javascript asset reference: jsAssetReference.md
+
+theme:
+  name: material
+
+markdown_extensions:
+  - codehilite
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.mark
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:pymdownx.emoji.to_svg
+  - pymdownx.critic
+  - pymdownx.caret
+  - admonition
+  - pymdownx.inlinehilite
+  - pymdownx.b64
