@@ -2,7 +2,7 @@ site_name: Goblin Tech documentation
 
 nav:
   - Home: index.md
-  - Getting started: download.md
+  - Getting started: gettingStarted.md
   - Goblin Deploy Tool: goblinDeployTool.md
   - Environments: environments.md
   - Networking guide: networkGuide.md

@@ -1,5 +1,5 @@
 # An overview of Goblin's unnamed deploy tool
-To power Goblin Cloud we use a proprietary deploy tool that provides us a fully container-less deployment and cluster orchestration. Moreover it's fully Node.js based & & without native dependencies, describes all DevOps processes on plain javascript. Here an example:
+To power Goblin Cloud we use a proprietary deploy tool that provides us a fully container-less deployment and cluster orchestration. Moreover it's fully Node.js based & without native dependencies, describes all DevOps processes on plain javascript. Here an example:
 ```javascript
 var digitalOcean = require('DigitalOcean'),
     utils = require('./utils.js');

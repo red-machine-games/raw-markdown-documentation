@@ -5,7 +5,7 @@ Find out compiled here: https://gbase.tech/doc
 ## Table of contents
 
  - [Home](https://github.com/red-machine-games/raw-markdown-documentation/blob/master/docs/index.md)
- - [Getting started](https://github.com/red-machine-games/raw-markdown-documentation/blob/master/docs/download.md)
+ - [Getting started](https://github.com/red-machine-games/raw-markdown-documentation/blob/master/docs/gettingStarted.md)
  - [Goblin Deploy Tool](https://github.com/red-machine-games/raw-markdown-documentation/blob/master/docs/goblinDeployTool.md)
  - [Environments](https://github.com/red-machine-games/raw-markdown-documentation/blob/master/docs/environments.md)
  - [Networking guide](https://github.com/red-machine-games/raw-markdown-documentation/blob/master/docs/networkGuide.md)
