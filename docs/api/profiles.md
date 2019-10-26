@@ -1,17 +1,17 @@
 # Profiles
 
-After signing up/in and before doing any work the second necessary thing you should do is to create or get profile. During this procedure your session is filled with useful data that allows to do further logic. Profile is separated from Account abstraction. It's goal is to keep all player's data in schema-less manner. Basically you should consider profile as a plain object, but it has fixed limited amount of root nodes:
+After signing up/in and before doing any work the second necessary thing you should do is to create or get the profile. During this procedure, your session is filled with useful data that allows doing further logic. A profile is separated from Account abstraction. Its goal is to keep all player's data in a schema-less manner. Basically, you should consider profile as a plain object, but it has a fixed limited amount of root nodes:
 
-- `profileData` - Here you put all player related data: gold, crystals, cards, army, character, progress etc;
-- `publicProfileData` - Second and the last schema-less node: here you put all data you consider public(name, level etc.). Warning, this node can be read by any player;
+- `profileData` - Here you put all player-related data: gold, crystals, cards, army, character, progress, etc;
+- `publicProfileData` - Second and the last schema-less node: here you put all data you consider public(name, level, etc.). Warning, this node can be read by any player;
 - `rating` - Matchmaking related number;
 - `mmr` - Matchmaking related number;
 - `wlRate` - Matchmaking related number;
-- `ver` - A domain version of particular profile. More information below.
+- `ver` - A domain version of a particular profile. More information below.
 
 ## Profile version
 
-When you have basically schema-less profile a problem of schema looks different than relational schema. Developer should keep his schema up to date and modify it from time to time depending on client version. Goblin Backend have a framework for profile mutation: it contains 2 things: `ver` that you should support up-to-date and `mutateProfile` cloud function(if authoritarian gameplay enabled). So you just need to match client's version with profile `ver` and mutate profile if needed. Using `mutateProfile` cloud function the things getting easier. It will be called automatically in right time before accessing. Here is an example how this function looks like:
+When you have basically schema-less profile a problem of schema looks different than relational schema. Developer should keep his schema up to date and modify it from time to time depending on the client version. Goblin Backend has a framework for profile mutation: it contains 2 things: `ver` that you should support up-to-date and `mutateProfile` cloud function(if authoritarian gameplay enabled). So you just need to match the client's version with profile `ver` and mutate profile if needed. Using `mutateProfile` cloud function the things getting easier. It will be called automatically at the right time before accessing it. Here is an example of how this function looks like:
 ```javascript
 var laVersion = await getProfileNode('ver');
         
@@ -27,7 +27,7 @@ MutateProfileResponse();
 
 ## Create new profile
 
-Procedure of creating profile is straightforward. You can check profile presence with account information after signing up. During process `createNewProfile` cloud function is called if there is one. It's goal is to generate basic values for root keys `profileData` and `publicProfileData`. Besides these keys profile will have `#!js wlRate === 0` and `#!js ver === 1`. Also special field `humanId` will be added - it is just an incrementing unique number representing `Human-readable ID`, you can't modify it, only get.
+The procedure for creating a profile is straightforward. You can check the profile presence with account information after signing up. During process `createNewProfile` cloud function is called if there is one. Its goal is to generate basic values for root keys `profileData` and `publicProfileData`. Besides these keys profile will have `#!js wlRate === 0` and `#!js ver === 1`. Also, special field `humanId` will be added - it is just an incrementing unique number representing `Human-readable ID`, you can't modify it, only get.
 Let's see a simple example of `createNewProfile` cloud function:
 ```javascript
 var profileData = { somePrivateData: 'space' },		// Here we prepare private data of fresh new profile
@@ -56,7 +56,7 @@ if(gbaseApi.currentAccount.prof){
 
 ## Getting profile data
 
-Once you've created a profile you don't need to do it further. You need to get the profile every time after signing in. Getting whole profile body in response only available with non-authoritarian gameplay(configured on backend side). When authoritarian the only thing you'll get is `#!js { disallowDirectProfileExposure: true }` - it means that you can't use any methods that directly exposures on game data, only cloud functions are available. Literally without cloud functions you'll be able only to manage you account. You can check the value like this:
+Once you've created a profile you don't need to do it further. You need to get the profile every time after signing in. Getting whole profile body in response only available with non-authoritarian gameplay(configured on backend side). When authoritarian the only thing you'll get is `#!js { disallowDirectProfileExposure: true }` - it means that you can't use any methods that directly exposures on game data, only cloud functions are available. Literally, without cloud functions, you'll be able only to manage your account. You can check the value like this:
 ```javascript
 /* Skipping GbaseApi init */
 
@@ -74,8 +74,8 @@ if(gbaseApi.currentProfile){
 
 ## Setting profile data
 
-This procedure considering full rewrite of certain root nodes. All profiles has fixed number of root nodes shown at the beginning of section. It's a good practice to use this procedure right after creation and once at every mutation but no more, to use networking in optimal way. 
-Important to point that you're not able to do any profile modifications if it's direct disposure disallowed: `#!js gbaseApi.currentProfile.disallowDirectProfileExposure === true`
+This procedure considering the full rewrite of certain root nodes. All profiles have a fixed number of root nodes shown at the beginning of the section. It's a good practice to use this procedure right after creation and once at every mutation but no more, to use networking optimally. 
+Important to point that you're not able to do any profile modifications if it's direct exposure disallowed: `#!js gbaseApi.currentProfile.disallowDirectProfileExposure === true`
 In the example below we will set all possible nodes:
 ```javascript
 /* Skipping GbaseApi init */
@@ -96,7 +96,7 @@ gbaseApi.profile.setp(
 
 ## Updating profile
 
-More appropriate for frequent use procedure updates only particular keys of `profileData` and `publicProfileData`. As arguments you should provide each key as full path.
+More appropriate for frequent use procedure updates only particular keys of `profileData` and `publicProfileData`. As arguments you should provide each key as a full path.
 ```javascript
 /* Skipping GbaseApi init */
 
@@ -118,7 +118,7 @@ This modification is atomic even without Goblin Backend atomic framework hence y
 
 ## Getting public profile
 
-The root node `publicProfileData` conceived as an everything that you want to show all other players. For example your public name, level, avatar or whatever. So you should keep this data synced between nodes `profileData` and `publicProfileData`. Remember that every profile in Goblin Backend has it's own unique human-readable ID and only knowing it you can query public profile data.
+The root node `publicProfileData` conceived as everything that you want to show all other players. For example your public name, level, avatar or whatever. So you should keep this data synced between nodes `profileData` and `publicProfileData`. Remember that every profile in Goblin Backend has its own unique human-readable ID and only knowing it you can query public profile data.
 ```javascript
 /* Skipping GbaseApi init */
 

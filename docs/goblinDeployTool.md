@@ -1,5 +1,5 @@
 # An overview of Goblin's unnamed deploy tool
-To power Goblin Cloud we use a proprietary deploy tool that provides us a fully container-less deployment and cluster orchestration. Moreover it's fully Node.js based & without native dependencies, describes all DevOps processes on plain javascript. Here an example:
+To power Goblin Cloud we use a proprietary deploy tool that provides us a fully container-less deployment and cluster orchestration. Moreover, it's fully Node.js based & without native dependencies, describes all DevOps processes on plain javascript. Here an example:
 ```javascript
 var digitalOcean = require('DigitalOcean'),
     utils = require('./utils.js');
@@ -57,6 +57,6 @@ exit({
 });
 ```
 
-Note that there is no single `callback`, `promise` or `async/await` - all code synchronous. We use a special trick to fully get rid of any asynchronous functions - we believe that it helps people that has javascript only as minory language to work with this tool in comfort.
+Note that there is no single `callback`, `promise` or `async/await` - all code synchronous. We use a special trick to fully get rid of any asynchronous functions - we believe that it helps people that have javascript only as a minor language to work with this tool in comfort.
 
-It covers many dev ops needs like deployment of everything, config delivery, scaling, tuning, data migration, updating and managing artifacts, stoping/running/restarting apps, managing automated benchmark processes, sending emails and many more. Right now this tool is closed source and feeds only our cloud but we making all efforts to make it open source.
+It covers many DevOps needs like deployment of everything, config delivery, scaling, tuning, data migration, updating and managing artifacts, stoping/running/restarting apps, managing automated benchmark processes, sending emails and many more. Right now this tool is closed source and feeds only our cloud but we making all efforts to make it open source.

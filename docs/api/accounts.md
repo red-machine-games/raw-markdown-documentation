@@ -1,12 +1,12 @@
 # Accounts
 
-Account and profiles are two different things linked with each other. Accounts represeting only data for login. You should see accounts as login methods, for example player has 1 profile linked with social profile(maybe Facebook) and 2 devices so he will have 2 account(for each device) and 1 active profile(actually each account will have it's own base profile but they both will be inactive until unlinking from social profile). Also it's possible to make account bi-login: a simple linking with social profile but keeping the one account-profile pair. You will be able to login with gClientId/gClientSecret and token from social network into the same account. But this procedure irreversible.  
-Accessing account is the first initial action that you must do before any work with Goblin Backend - it will give you a fresh session. Next we will look at all variants of signing up and signing in.
+Account and profiles are two different things linked with each other. Accounts representing only data for login. You should see accounts as login methods, for example player has 1 profile linked with social profile(maybe Facebook) and 2 devices so he will have 2 accounts (for each device) and 1 active profile(actually each account will have its base profile but they both will be inactive until unlinking from social profile). Also, it's possible to make account bi-login: a simple linking with social profile but keeping the one account-profile pair. You will be able to login with gClientId/gClientSecret and token from a social network into the same account. But this procedure irreversible. 
+Accessing account is the first initial action that you must do before any work with Goblin Backend - it will give you a fresh session. Next, we will look at all variants of signing up and signing in.
 
 ## Anonymous sign up
 
-If you're developing standalone app or mobile app the case for you to anonymously sign up - Goblin Backend will create account with credentials(gClientId and gClientSecret) for you - you'll get it in response. You should consider saving this credentials somewhere: persist on device or use side services like Google Play Services.  
-Also it's the most straightforward method of creating account:
+If you're developing a standalone app or mobile app the case for you to anonymously sign up - Goblin Backend will create an account with credentials(gClientId and gClientSecret) for you - you'll get it in response. You should consider saving these credentials somewhere: persist on a device or use side services like Google Play Services. 
+Also, it's the most straightforward method of creating an account:
 ```javascript
 // Let's init API
 var gbaseApi = new Gbase.GbaseApi('some-proj', 'dev', 'some HMAC secret', Gbase.GbaseApi.PLATFORM.STDL, '0.0.2');
@@ -85,7 +85,7 @@ gbaseApi.account.signinGbase(gClientId, gClientSecret, (err, response) => {
 
 ## Authenticate with web VK
 
-If you are building app for WEBVK that will be deployed into VK.com's iframe you can authenticate using credentials from it. The platform will give you an ID and generated secret, you should use to prove your identity. Also backend must be configured with server-side data: ==VK.com's app ID and app secret==. A profile made after authentication can be linked onto standalone accounts using token of ==VK.com's SDK==.
+If you are building an app for WEBVK that will be deployed into VK.com's iframe you can authenticate using credentials from it. The platform will give you an ID and generated the secret, you should use to prove your identity. Also, backend must be configured with server-side data: ==VK.com's app ID and app secret==. A profile made after authentication can be linked onto standalone accounts using the token of ==VK.com's SDK==.
 ```javascript
 var gbaseApi = new Gbase.GbaseApi('some-proj', 'dev', 'some HMAC secret', Gbase.GbaseApi.PLATFORM.WEBVK, '0.0.1');
 
@@ -104,7 +104,7 @@ gbaseApi.account.authWebVk(vkId, vkSecret, (err, response) => {
 
 ## Authenticate with web OK
 
-If you are building app for WEBOK that will be deployed into OK.ru's iframe you can authenticate using credentials from it. The platform will give you an ID and generated secret, you should use to prove your identity. Also backend must be configured with server-side data: ==OK.ru's app ID and app secret==. A profile made after authentication can be linked onto standalone accounts using token of ==OK.ru's SDK==.
+If you are building an app for WEBOK that will be deployed into OK.ru's iframe you can authenticate using credentials from it. The platform will give you an ID and generated the secret, you should use to prove your identity. Also, backend must be configured with server-side data: ==OK.ru's app ID and app secret==. A profile made after authentication can be linked onto standalone accounts using the token of ==OK.ru's SDK==.
 ```javascript
 var gbaseApi = new Gbase.GbaseApi('some-proj', 'dev', 'some HMAC secret', Gbase.GbaseApi.PLATFORM.WEBOK, '0.0.1');
 
@@ -123,8 +123,8 @@ gbaseApi.account.authWebOk(okId, okSecret, okSessionKey, (err, response) => {
 
 ## Authenticate with VK SDK
 
-If you are building standalone or mobile device app you still have method to authenticate with social profile using it's SDK. Only thing you need is a token from ==VK.com SDK==.
-You can access already created profile if you did this previously using Web VK authentication.
+If you are building a standalone or mobile device app you still have a method to authenticate with a social profile using its SDK. The only thing you need is a token from ==VK.com SDK==.
+You can access the already created profile if you did this previously using Web VK authentication.
 ```javascript
 var gbaseApi = new Gbase.GbaseApi('some-proj', 'dev', 'some HMAC secret', Gbase.GbaseApi.PLATFORM.IOS, '0.0.1');
 
@@ -143,8 +143,8 @@ gbaseApi.account.authVkSdk(vkToken, (err, response) => {
 
 ## Authenticate with OK SDK
 
-If you are building standalone or mobile device app you still have method you authenticate with social profile using it's SDK. Only thing you need is a token from ==OK.ru SDK==.
-You can access already created profile if you did this previously using Web OK authentication.
+If you are building a standalone or mobile device app you still have a method you authenticate with a social profile using its SDK. The only thing you need is a token from ==OK.ru SDK==.
+You can access the already created profile if you did this previously using Web OK authentication.
 ```javascript
 var gbaseApi = new Gbase.GbaseApi('some-proj', 'dev', 'some HMAC secret', Gbase.GbaseApi.PLATFORM.IOS, '0.0.1');
 
@@ -182,7 +182,7 @@ gbaseApi.account.authFb(fbToken, (err, response) => {
 
 ## The session
 
-All networking is done only with user session that's tend to rot. After some time of inactivity(configured on backend side) session disappears and you'll need to re login. To prevent it you need to ping server from time to time. If using client asset it will do it automatically but you need to call method of "some user input":
+All networking is done only with user sessions that tend to rot. After some time of inactivity(configured on backend side) session disappears and you'll need to re-login. To prevent it you need to ping server from time to time. If using client asset it will do it automatically but you need to call the method of "some user input":
 ```javascript
 /* Skipping GbaseApi init */
 

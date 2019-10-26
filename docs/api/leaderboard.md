@@ -1,10 +1,10 @@
 # Leaderboard and records 🏆
 
-Leaderboards are great unit of social competition. You can post records into white list of segments and retrieve leaders. All values must be ==**from 0 to 2147483647**==. Along with different segments you can retrieve leaders among your social friends - you need to push friends list manually. Also public route for retrieving leaders is available and configurable on the backend side.
+Leaderboards are a great unit of social competition. You can post records into a white list of segments and retrieve leaders. All values must be ==**from 0 to 2147483647**==. Along with different segments, you can retrieve leaders among your social friends - you need to push friends list manually. Also, the public route for retrieving leaders is available and configurable on the backend side.
 
 ## Posting record
 
-For post you should provide segment name and positive int value itself. All segments should be whitelisted on backend side to avoid pollution.
+For post, you should provide a segment name and positive int value itself. All segments should be whitelisted on the backend side to avoid pollution.
 ```javascript
 /* Skipping GbaseApi init */
 
@@ -39,8 +39,8 @@ gbaseApi.leaderboards.getSelfRecord('main_segment', (err, response) => {
 
 ## Get overall leaderboard
 
-You can list leaders in `descending` order up to 20 records per time using pagination mechanism. Also leaders can retrieved publically with special route if configured. Pagination is controlled by arguments `skip` - from 0 to +infinity and `limit` - from 1 to 20. Response has 2 keys: `records` - containing array of pairs `score`+`hid`(human-readable ID) and `len` - total number of records in leaderboard of particular segment.
-Let's imagine that we have a project with id `superstudio-game` and `dev` environment so we can retrieve records from segment `def` publically using the url: 
+You can list leaders in `descending` order up to 20 records per time using a pagination mechanism. Also, leaders can be retrieved publically with a special route if configured. Pagination is controlled by arguments `skip` - from 0 to +infinity and `limit` - from 1 to 20. The response has 2 keys: `records` - containing an array of pairs `score`+`hid`(human-readable ID) and `len` - total number of records in the leaderboard of a particular segment.
+Let's imagine that we have a project with id `superstudio-game` and `dev` environment so we can retrieve records from segment `def` publically using the URL: 
 
  > _https://superstudio-game-dev.gbln.app/api/v0/pub.getLeadersOverall?skip={from 0 to +infinity}&limit={from 1 to 20}&segment=def_
 
@@ -93,8 +93,8 @@ gbaseApi.leaderboards.getSomeonesRating(someonesHumanId, 'main_segment', (err, r
 
 ## Retrieving records among social friends
 
-Before successful retrievning you should push appropriate network's friends list. It will cache them for a while then just repeat procedure. To get social friends you can use your desirable SDK. After pushing you'll be able to retrieve records among your friends. This feature covers 3 social networks currently: ==Facebook==, ==VK.com== and ==OK.ru==.
-Friends cache live for a week(can be configured on backend) so try to refresh it at least once a week. If no friends cache returning listing will be empty. 
+Before successful retrieving, you should push the appropriate network's friends list. It will cache them for a while then just repeat the procedure. To get social friends you can use your desirable SDK. After pushing you'll be able to retrieve records among your friends. This feature covers 3 social networks currently: ==Facebook==, ==VK.com== and ==OK.ru==.
+Friends cache live for a week(can be configured in the backend) so try to refresh it at least once a week. If no friends cache returning listing will be empty. 
 
 ## Pushing Facebook friends
 

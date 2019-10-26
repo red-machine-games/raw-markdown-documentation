@@ -1,5 +1,5 @@
 # Getting started 🚀
-All products of Goblin Tech stack are open source based - it means that they all are available at public repositories with full related functionality. You can find it at [Github](https://github.com/red-machine-games). In further sections we'll overview how to get started with represented products.
+All products of Goblin Tech stack are open-source based - it means that they all are available at public repositories with full related functionality. You can find it at [Github](https://github.com/red-machine-games). In further sections, we'll overview how to get started with represented products.
 
 ## Table of contents
  - [Getting started with Goblin Base Server](#getting-started-with-goblin-base-server)
@@ -73,17 +73,17 @@ All products of Goblin Tech stack are open source based - it means that they all
         - [async WsBenchApi.prototype.pushMeasure(measureHead, n, measuredDuration)](#async-wsbenchapiprototypepushmeasuremeasurehead-n-measuredduration)
 
 ## Getting started with Goblin Base Server
-The project itself is designed as a module that you just download from `NPM` and require into your code. Important things to notice: it doesn't use any logging lib, configuration delivery and process management - it gives user a freedom to pick the most appropriate and beloved libs. The [Bootstrap repository](https://github.com/red-machine-games/goblin-base-server-bootstrap) represents the simple project that implements server's lib with default configs - it's a great starting point for developer. It hooks logs on console, also there is `pm2process.json` file so you can just run it with [pm2](https://www.npmjs.com/package/pm2) process manager (btw `pm2` writes console logs into files - just type `$ pm2 logs` after installation, config and run).
+The project itself is designed as a module that you just download from `NPM` and require into your code. Important things to notice: it doesn't use any logging lib, configuration delivery, and process management - it gives the user freedom to pick the most appropriate and beloved libs. The [Bootstrap repository](https://github.com/red-machine-games/goblin-base-server-bootstrap) represents the simple project that implements the server's lib with default configs - it's a great starting point for the developer. It hooks logs on the console, also there is `pm2process.json` file so you can just run it with [pm2](https://www.npmjs.com/package/pm2) process manager (btw `pm2` writes console logs into files - just type `$ pm2 logs` after installation, config and run).
 
 ### Instantiate
-Server's API represented by `GoblinBase` class instance - it's a singleton yet hence don't use construcor
+Server's API represented by `GoblinBase` class instance - it's a singleton yet hence don't use constructor.
 ```javascript
 var GoblinBase = require('goblin-base-server'),
     goblinBase = GoblinBase.getGoblinBase();
 ```
 
 ### Configurate
-First of all let's configure mandatory things. Configuration process is done with chain-calls of `GoblinBase`'s instance
+First of all, let's configure mandatory things. The configuration process is done with chain-calls of `GoblinBase`'s instance
 
 (We suppose that you already installed [Redis](https://redis.io/) and [MongoDB](https://www.mongodb.com/) and they are available at default localhost)
 ```javascript
@@ -103,7 +103,7 @@ goblinBase
         .setupResourceLockerClient('localhost', 6379, { db: 7 })
     )
 ```
-Here we firstly hooked logs: `hookLogs` is for main logs stream - it logs all system-related messages and errors, `hookCloudFunctionsLogs` is for logs inside of cloud functions. Redis and MongoDB config goes second - as you mentioned we have 7 Redis connections separated by domain logic and 1 separate pvp room Redis. Check out the [Scalability](https://github.com/red-machine-games/goblin-base-server#scalability) section to find out how it looks like.
+Here we firstly hooked logs: `hookLogs` is for main logs stream - it logs all system-related messages and errors, `hookCloudFunctionsLogs` is for logs inside of cloud functions. Redis and MongoDB config goes second - as you mentioned we have 7 Redis connections separated by domain logic and 1 separate PvP room Redis. Check out the [Scalability](https://github.com/red-machine-games/goblin-base-server#scalability) section to find out how it looks like.
 
 ### More configurations
 Next let's configure mandatory features of Goblin Base Server.
@@ -114,7 +114,7 @@ goblinBase
     .includeProfiles()
 ```
 
-Here we configure the mandatory features. As we can see they has some options that will be fully listed below.
+Here we configure the mandatory features. As we can see they have some options that will be fully listed below.
 
 
 ### Configure non mandatory features
@@ -144,7 +144,7 @@ goblinBase
 Here we have all features aboard (_Grouping and chats WIP_). All chain methods can get an opts argument or default opts if no opt fiend or entire opt argument provided.
 
 ### Add platforms and HMAC secrets
-Goblin Base Server protects communication with _foolproof_: all messages must be provided with request sequence number and unique HMAC sign. At least it can protect your game or app from analyzing and faking requests from _Chrome dev console_.
+Goblin Base Server protects communication with _foolproof_: all messages must be provided with a request sequence number and unique HMAC sign. At least it can protect your game or app from analyzing and faking requests from _Chrome dev console_.
 ```javascript
 // ...
 goblinBase
@@ -155,10 +155,10 @@ goblinBase
     });
 ```
 
-So the purpose is simple: it controls the platform header(technically the Server doesn't care about origin platform of requests) and version header. You should keep the `minimumVersion` parameter up-to-date to block clients with out-of-date client builds - it responds with `code 400 body { index: 404, message: 'Go update!' }`. The `hmacSecretsMap` arguments represents different hmac secrets for different versions(the rule is _more or equal_) - if you suspect that your client build was hacked & secret was exposed, you can generate new one and insert it into future version (all versions should semantic: `number.number.number`).
+So the purpose is simple: it controls the platform header(technically the Server doesn't care about origin platform of requests) and version header. You should keep the `minimumVersion` parameter up-to-date to block clients with out-of-date client builds - it responds with `code 400 body { index: 404, message: 'Go update!' }`. The `hmacSecretsMap` arguments represent different hmac secrets for different versions(the rule is _more or equal_) - if you suspect that your client build was hacked & secret was exposed, you can generate a new one and insert it into future version (all versions should semantic: `number.number.number`).
 
 ### Require first cloud function
-Let's develop our first cloud function - it should increment some number value in player's profile each time being called.
+Let's develop our first cloud function - it should increment some number value in a player's profile each time being called.
 ```javascript
 await lock.self();
 
@@ -170,7 +170,7 @@ setProfileNode('profileData.thatCounter', thatCounter);
 FunctionResponse({ hereItIs: thatCounter });
 ```
 
-Suppose that we put it into `cloudFunction` directory with file name `myFirstCloudFunction.js`. Now let's require it and start the server. The require mechnism works similar to _Node_'s.
+Suppose that we put it into the `cloudFunction` directory with the file name `myFirstCloudFunction.js`. Now let's require it and start the server. The require mechanism works similar to _Node_'s.
 
 ```javascript
 // ...
@@ -192,14 +192,14 @@ var thatCounter = (await gbaseApiStdl.cloudFunction('myFirstCloudFunction')).det
 Piece of cake.
 
 ### Running main web app only or pvp room only
-Goblin Base Server in fact represents two servers at once:
+Goblin Base Server, in fact, represents two servers at once:
 
- 1. _Main web app server_ - with all profiles, leaderboards, cloud function, etc. features - http only;
- 2. _Pvp room server_ - receiving connections with `booking key` - http and websockets.
+ 1. _Main web app server_ - with all profiles, leaderboards, cloud function, etc. features - HTTP only;
+ 2. _Pvp room server_ - receiving connections with `booking key` - HTTP and WebSockets.
 
 To run first one - pass `port` and `host` arguments into `goblinBase.start(1337, 'localhost')`, call `dontRunMainWebapp()` chain method to skip the main web app server. To run the second - just include pvp: `goblinBase.includePvp({ ... })` and vice versa.
 
-Configure database access as usual because all cluster members communicates with it, but there are some nuances with Redis connection: _main web app_ server needs only 7 Redis clients - except `PvpRoomClient`, but _pvp room_ server needs 2 Redis clients - `MatchmakingClient` because it's a connecting link between all cluster members, and `PvpRoomClient`. Check out the scalability schematic picture to get pick up the idea: [goblin-base-server#scalability](https://github.com/red-machine-games/goblin-base-server#scalability)
+Configure database access as usual because all cluster members communicate with it, but there are some nuances with Redis connection: _main web app_ server needs only 7 Redis clients - except `PvpRoomClient`, but _pvp room_ server needs 2 Redis clients - `MatchmakingClient` because it's a connecting link between all cluster members, and `PvpRoomClient`. Check out the scalability schematic picture to get pick up the idea: [goblin-base-server#scalability](https://github.com/red-machine-games/goblin-base-server#scalability)
 
  > Note: Use [reverse proxy](https://nginx.org/) for all servers
 
@@ -526,7 +526,7 @@ Adds a platform. You must add platforms according to your client builds and hide
     - `allowHeaders` {String} - Access-Control-Allow-Headers. _default: "X-Req-Seq,X-Request-Sign,X-Platform-Version,X-Unicorn,Accept,Content-Type,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range,X-Benchmark-Intervals,X-Book-Key"_
     - `exposeHeaders` {String} - Access-Control-Expose-Headers. _default: "X-Api-Version,X-Balance-Version,Accept,Content-Type,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range,Pragma"_
 
-Enables Node.js CORS in case you didn't configure it on reverse proxy.
+Enables Node.js CORS in case you didn't configure it on the reverse proxy.
 
 ### .dontRunMainWebapp()
 
@@ -534,18 +534,18 @@ Don't run _main web app_'s server. Then you must run _pvp room_'s server.
 
 ## Getting started with client-side SDKs
 
-Client-side SDKs (assets) are designed to incapsulate as much mess as possible from the user. 2 SDKs are available at the moment: [javascript SKD](https://github.com/red-machine-games/goblin-javascript-asset) and [Unity C# asset](https://github.com/red-machine-games/goblin-unity3d-asset)
+Client-side SDKs (assets) are designed to encapsulate as much mess as possible from the user. 2 SDKs are available at the moment: [javascript SKD](https://github.com/red-machine-games/goblin-javascript-asset) and [Unity C# asset](https://github.com/red-machine-games/goblin-unity3d-asset)
 
- > Note: Unity asset is on very WIP stage right now and doesn't meet the current vision of SDKs also slightly unready to be used. We working hard to make it meet the common vision of SDKs with all required features. Hence this getting started section will describe only javascript SDK.
+ > Note: Unity asset is on very WIP stage right now and doesn't meet the current vision of SDKs also slightly unready to be used. We working hard to make it meet the common vision of SDKs with all required features. Hence this getting started section will describe only the javascript SDK.
  
 ## Javascript SDK
  
  Can be used from Node.js or from browser. 2 ways on how to get it as a dependency:
 
-  - Get it with _npm_: `$ npm install --save gbase-html5-sdk`
-  - Insert it into _HTML_ code: `<script src="https://gbase-public-static.ams3.cdn.digitaloceanspaces.com/gbase-html5-latest-min.js"></script>`
+ - Get it with _npm_: `$ npm install --save gbase-html5-sdk`
+ - Insert it into _HTML_ code: `<script src="https://gbase-public-static.ams3.cdn.digitaloceanspaces.com/gbase-html5-latest-min.js"></script>`
 
-Henceforth there is some nuance about instantiating API depending from the way you require it into project:
+Henceforth there is some nuance about instantiating API depending on the way you require it into the project:
 
 ### If installed from _npm_:
 ```javascript
@@ -617,7 +617,7 @@ var GbaseApi = require('gbase-html5-sdk').Gbase.GbaseApi,
 Notable detail: it uses [store](https://www.npmjs.com/package/store) npm package to automatically store credentials, call `GbaseApi.dropCache();` to clear it.
 
 ### Notes about session lifetime
-Goblin's Server is session-based - it means that you get it on auth and then use it for all further things. So session lifetime is limited with `sessionLifetime` parameter (you configure it on `includeAccounts`) and after timeout you'll get an any of following error responses with code 401: `{ index: 423, message: 'Unknown unicorn' }` or `{ index: 891, message: 'Unknown unicorn' }`. It's okay so just login again with `reauth` method and go further. Here is a rough example of handling:
+Goblin's Server is session-based - it means that you get it on auth and then use it for all further things. So session lifetime is limited with `sessionLifetime` parameter (you configure it on `includeAccounts`) and after timeout you'll get an any of following error responses with code 401: `{ index: 423, message: 'Unknown unicorn' }` or `{ index: 891, message: 'Unknown unicorn' }`. It's okay so just login again with the `reauth` method and go further. Here is a rough example of handling:
 ```javascript
 async getWorldRankAndScore(){
     try{
@@ -636,19 +636,19 @@ async getWorldRankAndScore(){
 Checout out more [examples at Demo game](https://github.com/red-machine-games/clash-of-cats-game/blob/master/src/controllers/ControllerHowardResponsibleForNetworking.js)'s repository
 
 ### Notes about AFK
-It's a common case when player gets Away From Keyboard (Away From Komputer) - you should handle it rightly and let session to die. To prevent session dead while player you should call a special method: `gbaseApi.userInputBeenDone();` - Goblin Base's API handles ping functionality internally but it should be sure that player actually doing something. You can call this method on any input or call it with interval if you definitely sure that player is not AFK.
+It's a common case when the player gets Away From Keyboard (Away From Komputer) - you should handle it rightly and let the session to die. To prevent session dead while player you should call a special method: `gbaseApi.userInputBeenDone();` - Goblin Base's API handles ping functionality internally but it should be sure that player actually doing something. You can call this method on any input or call it with an interval if you are definitely sure that the player is not AFK.
 
-If player(user) is AFK the session dies soon hence handle it as mentioned in prev. section. Also you can use `logout` event but it's not persistent due to dependency on `ping` request:
+If the player(user) is AFK the session dies soon hence handle it as mentioned in prev. section. Also, you can use the `logout` event but it's not persistent due to dependency on `ping` request:
 ```javascript
 gbaseApi.on('logout', () => console.log('You\'re AFK'));
 ```
 
 ### Notes about PvP
-Here some notes that can be useful on building PvP functionality.
+Here some notes that can be useful in building PvP functionality.
 
-You can call a method `await gbaseApi.pvp.dropMatchmaking();` before actual matchmaking. It drops operative data about your current matchmaking state. It's useful in case your client build glitched, crashed, desynced with backend or in case of any unexpected behavior. But if you'll drop the PvP match you're currently in - you get the auto defeat.
+You can call a method `await gbaseApi.pvp.dropMatchmaking();` before actual matchmaking. It drops operative data about your current matchmaking state. It's useful in case your client build glitched, crashed, desynced with a backend or in case of any unexpected behavior. But if you'll drop the PvP match you're currently in - you get the auto defeat.
 
-Pvp provides a commons: timestamp (UTC-0) of beginning and seed for [mersenne twister](https://en.wikipedia.org/wiki/Mersenne_Twister) - everything for you to be fully in sync with your opponent. But ping can break in and make a shift in time as far as difference between your pings milliseconds is big enough. To dodge this problem you can calculate local time shift based on ping: make a few ping probes, get the median and the half is your shift. Here is example from [examples at Demo game](https://github.com/red-machine-games/clash-of-cats-game/blob/master/src/controllers/ControllerHowardResponsibleForNetworking.js)'s repository:
+Pvp provides a commons: timestamp (UTC-0) of beginning and seed for [mersenne twister](https://en.wikipedia.org/wiki/Mersenne_Twister) - everything for you to be fully in sync with your opponent. But ping can break in and make a shift in time as far as the difference between your pings milliseconds is big enough. To dodge this problem you can calculate local time shift based on ping: make a few ping probes, get the median and the half is your shift. Here is an example from [examples at Demo game](https://github.com/red-machine-games/clash-of-cats-game/blob/master/src/controllers/ControllerHowardResponsibleForNetworking.js)'s repository:
 ```javascript
 const TIME_DIFF_PROBES = 10;
 // ...
@@ -672,14 +672,14 @@ async _measureTimeDiff(){
 Anyway check out full code of demo game as an example of API usage: [clash-of-cats-game](https://github.com/red-machine-games/clash-of-cats-game)
 
 ## Getting started with Goblin Base Benchmark
-A scenario-based distributed benchmark tool made with languages javascript and lua, based on Node.js and Redis, no native dependencies. It was made to simulate workloads for [Goblin Base Server](https://github.com/red-machine-games/goblin-base-server) but works fine with any http endpoints and websocket endpoints.
+A scenario-based distributed benchmark tool made with languages javascript and Lua, based on Node.js and Redis, no native dependencies. It was made to simulate workloads for [Goblin Base Server](https://github.com/red-machine-games/goblin-base-server) but works fine with any http endpoints and websocket endpoints.
 
-**Important note**: this benchmark is not that significantly optimised to work from single instance - he's unlikely to show good numbers. If you plan to use single machine benchmark - look at [Autocannon](https://www.npmjs.com/package/autocannon) or [Wrk](https://github.com/wg/wrk). Otherwise if you aimed to expose exactly Goblin Benchmark's distributed nature and develop full featured javascript scenarios - give it a try. Javascript scenario means literally plain javascript with all it's features - it's convenient to use if you need to run some imposing client-side logic for requests: they can be some arguments calculations or even full libraries of authoritarian logic (like gameplay library). Just tune cluster size and batch size to gain various numbers of requests per second and response time.
+**Important note**: this benchmark is not that significantly optimized to work from a single instance - he's unlikely to show good numbers. If you plan to use a single machine benchmark - look at [Autocannon](https://www.npmjs.com/package/autocannon) or [Wrk](https://github.com/wg/wrk). Otherwise, if you aimed to expose exactly Goblin Benchmark's distributed nature and develop full-featured javascript scenarios - give it a try. Javascript scenario means literally plain javascript with all its features - it's convenient to use if you need to run some imposing client-side logic for requests: they can be some argument calculations or even full libraries of authoritarian logic (like gameplay library). Just tune cluster size and batch size to gain various numbers of requests per second and response time.
 
-It's working principle looks like a cluster of Node.js instances running the same javascript file independently but before yet another http burst or websockets burst they all coordinated by Redis to start that burst at the same time, after that the same Redis coordinator collects the results. At the end results are collected and calculated by single cluster member and dumped into files. To make scenario development easy all API methods are [async](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function).
+It's working principle looks like a cluster of Node.js instances running the same javascript file independently but before yet another HTTP burst or WebSockets burst, they all coordinated by Redis to start that burst at the same time, after that the same Redis coordinator collects the results. In the end, results are collected and calculated by single cluster members and dumped into files. To make scenario development easy all API methods are [async](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function).
 
 ### Run benchmark on bootstrap project
-First need to get the project and install appropriate software(node and databases). We are going to run it locally so we have to fix pvp configurations a little:
+First, need to get the project and install appropriate software(node and databases). We are going to run it locally so we have to fix PvP configurations a little:
 ```javascript
 .includePvp({
     apiPrefix: 'api/v0/',
@@ -746,7 +746,7 @@ Next lets install the benchmark `$ npm install -g goblin-base-benchmark`, downlo
 3 | Work is done for #4!
 ```
 
-It means that all 4 node independent processes ends okay. Now you should find results at directory `_benchmarkResults_` of your `cwd` with many appropriate json files - for each requests burst. Here is an example of file:
+It means that all 4 node independent processes end okay. Now you should find results at directory `_benchmarkResults_` of your `cwd` with many appropriate JSON files - for each request burst. Here is an example of a file:
 ```javascript
 {
     "fileName": "builtin-accountAndProfile-createProfile",

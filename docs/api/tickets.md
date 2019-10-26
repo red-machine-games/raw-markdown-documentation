@@ -1,10 +1,10 @@
 # Tickets
 
-Are another players interaction mechanism. You can consider them as email sended by either `Human ID` or social ID. They has useful payloads and can be reacted by recipients what gives you a possibility to build exchange/gift system.
+Are another player's interaction mechanism. You can consider them as email sent by either `Human ID` or social ID. They have useful payloads and can be reacted by recipients what gives you a possibility to build an exchange/gift system.
 
 ## Send ticket
 
-Ticket can be sended using these coordinates: **human ID**, **VK ID**, **OK ID** or **Facebook ID**. And it's not necessary for social profile to exist. All tickets can be sended on social IDs even before actual registration of recipient and read later. Tickets has limited ttl - configured on backend side.
+The ticket can be sent using these coordinates: **human ID**, **VK ID**, **OK ID** or **Facebook ID**. And a social profile doesn't need to exist. All tickets can be sent on social IDs even before the actual registration of the recipient and read later. Tickets have limited ttl - configured on the backend side.
 ```javascript
 /* Skipping GbaseApi init */
 
@@ -73,7 +73,7 @@ gbaseApi.tickets.listReceivedTickets(0, 20, (err, response) => {
 
 ## Confirming tickets
 
-Recipient can confirm ticket as an act of positive reaction - sender will find out about it. Ticket disappears from listings. Use `ticket ID` to refer and 4 methods to interact, depends on receiver id(human ID or one of social IDs) 
+The recipient can confirm the ticket as an act of positive reaction - the sender will find out about it. Ticket disappears from listings. Use `ticket ID` to refer and 4 methods to interact, depends on receiver id(human ID or one of the social IDs) 
 ```javascript
 /* Skipping GbaseApi init */
 
@@ -118,7 +118,7 @@ gbaseApi.tickets.confirmTicketOk(ticketSendedOnOkIdTicketId, (err, response) => 
 
 ## Rejecting tickets
 
-Recipient can reject ticket as an act of negative reaction - sender will find out about it. Ticket disappears from listings. Use `ticket ID` to refer and 4 methods to interact, depends on receiver id(human ID or one of social IDs)
+The recipient can reject tickets as an act of negative reaction - the sender will find out about it. Ticket disappears from listings. Use `ticket ID` to refer and 4 methods to interact, depends on receiver id(human ID or one of the social IDs)
 ```javascript
 /* Skipping GbaseApi init */
 
@@ -181,7 +181,7 @@ gbaseApi.tickets.dischargeTicket(aTicketIdToDischarge, (err, response) => {
 
 ## Dismissing and Releasing ticket
 
-Basically confirm sended ticken with some recipient's reaction. Dismissing for confirming ticket with negative reaction and releasing for ticket with positive reactions. By itself they do nothing to player data but you can build domain logic around these methods.
+Basically, confirm sent tickets with some recipient's reaction. Dismissing for confirming a ticket with negative reaction and releasing for the ticket with positive reactions. By itself, they do nothing to player data but you can build domain logic around these methods.
 ```javascript
 /* Skipping GbaseApi init */
 

@@ -20,7 +20,7 @@ gbaseApi.utils.getServerTime((err, response) => {
 
 ## Mobile in-app purchases validation
 
-You can validate receipts from Google Play and App Store depends on platform you configured API with. Also it's possible to validate receipts from cloud functions.
+You can validate receipts from Google Play and App Store depends on the platform you configured API with. Also, it's possible to validate receipts from cloud functions.
 ```javascript
 // Let's init API
 var gbaseApi = new Gbase.GbaseApi('some-proj', 'dev', 'some HMAC secret', Gbase.GbaseApi.PLATFORM.ANDROID, '0.0.2');

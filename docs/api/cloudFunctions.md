@@ -1,7 +1,7 @@
 # Cloud functions ☁️
 
-==Is commonly used feature to easily integrate custom code into the cloud==. Goblin Backend implements them to let the client-side developers code down domain logic on backend-side in most casual way using simplified JavaScript. It specially encloses cliend-side developer from such a complicated things like infrastructural and scaling issues, querying database and operative cache, javascript's event-driven nature and more. One of the biggest needs to use cloud functions is to implement authoritarian logic and PvE bots. To prevent hacking and implement atomic changing of 2 or more entities.
-Let's have a quick look at cloud function's example.
+==Is a commonly used feature to easily integrate custom code into the cloud==. Goblin Backend implements them to let the client-side developers code down domain logic on the backend-side in the most casual way using simplified JavaScript. It specially encloses client-side developers from such complicated things like infrastructural and scaling issues, querying the database and operative cache, javascript's event-driven nature and more. One of the biggest needs to use cloud functions is to implement authoritarian logic and PvE bots. To prevent hacking and implement atomic changing of 2 or more entities.
+Let's have a quick look at the cloud function's example.
 
 _Here we spend some gold to upgrade our card level_:
 ```javascript
@@ -40,14 +40,14 @@ That was the basic example of authoritarian domain logic implemented with cloud 
 
 ## ACID engine
 
-Cloud functions can make some changes to database and operational data so to not to lose updates on half way it should be guaranteed by transactional engine. Inside of cloud function you can change profile, ratings, validate store receipt, add battle journal entries for your self or for many other players.
+Cloud functions can make some changes to the database and operational data so to not lose updates on halfway it should be guaranteed by a transactional engine. Inside of cloud function, you can change profile, ratings, validate store receipt, add battle journal entries for your self or many other players.
 
 !!! example "How transaction life cycle looks like"
-	1. Before making any changes you must lock your self or some people to prevent other invading your updates using methods of object `#!js lock`: i.g. `#!js await lock.self();` or `#!js await lock.selfAnd([someHumanId]);`, `#!js await lock.some([someHumanId, anotherHumanId]);`. Also you can use `#!js relock` instead of `#!js lock` but better to not use it without strict need;
-	2. Lock is deadlock-less due to you can't get a lock already having lock also locker is single threaded and race-less so if you wait for somebody, nobody waits for you;
-	3. After getting lock you can operate with data: read and update. ==Warning! Updating is not done at the moment, all updates are done only after whole cloud function is done==. So you'll read some value from profile, push update and read again, it will remain the same. Updated value will be available only after cloud function done;
-	4. All set and update functions are filling the transaction entity with data. Transaction entity is a document that represents exhaustive set of data and as soon as it'll be persisted transaction guaranteed to succeed. Even in case of error all the data will cyclically roll on till success. No entities with undone transactions are available. The key is idempotency of updates;
-	5. The lock freed and request done after successful updates.
+    1. Before making any changes you must lock your self or some people to prevent others from invading your updates using methods of object `#!js lock`: i.g. `#!js await lock.self();` or `#!js await lock.selfAnd([someHumanId]);`, `#!js await lock.some([someHumanId, anotherHumanId]);`. Also, you can use `#!js relock` instead of `#!js lock` but better to not use it without strict need;
+    2. The lock is deadlock-less due to you can't get a lock already having lock also locker is single-threaded and race-less so if you wait for somebody, nobody waits for you;
+    3. After getting a lock you can operate with data: read and update. ==Warning! Updating is not done at the moment, all updates are done only after the whole cloud function is done==. So you'll read some value from a profile, push update and read again, it will remain the same. The updated value will be available only after cloud function has done;
+    4. All set and update functions are filling the transaction entity with data. The transaction entity is a document that represents an exhaustive set of data and as soon as it'll be persisted transaction guaranteed to succeed. Even in case of error, all the data will cyclically roll on till success. No entities with undone transactions are available. The key is idempotency of updates;
+    5. The lock freed and request done after successful updates.
 
 ## CRUD them
 
@@ -56,11 +56,11 @@ You can "CRUD" cloud functions with simplified webpage. Let's imagine we have a 
  > _https://super-studio-app-dev.gbln.app/api/v0/cf.gui_
 
 !!! example "The next list of theses is true for _CRUD_-ing cloud functions"
-	1. Actually you can't upload or update particular separately taken functions to not to interrupt consistency. Uploading happens only for whole code base totally replacing previous;
-	2. But you can delete separately taken scripts;
-	3. Routes are protected with basic auth. The credentials be found during deploy process.
+    1. Actually, you can't upload or update particular separately taken functions to not to interrupt consistency. Uploading happens only for whole code base replacing previous;
+    2. But you can delete separately taken scripts;
+    3. Routes are protected with basic auth. The credentials are found during the deploy process.
 
-You should pay big attention to updating process. It's frequent when code base represents whole consistent entity and inconsistency appears while updating due to horizontally scaled system design. So just imagine that you have a sequence of meta actions so at the moment of update client has a chance to call acts of different versions. Here you can find maintenance mechnaism helpful. See further to find out more about maintenance.
+You should pay a big attention to the updating process. It's frequent when code base represents whole consistent entity and inconsistency appears while updating due to horizontally scaled system design. So just imagine that you have a sequence of meta actions so at the moment of update client has a chance to call acts of different versions. Here you can find maintenance mechanism helpful. See further to find out more about maintenance.
 
 ## Maintenance
 
@@ -72,25 +72,25 @@ It works very simple: set the wildcard-based filter for URIs that should be bloc
 
 ## Predefined cloud functions and user-defined ones
 
-All cloud functions should have unique names satisfying regexp `#!js /^[$A-Z_][0-9A-Z_$]*$/i`({>>just camel-case without extra chars<<}). Moreover Goblin Backend has list of predefined cloud functions that corresponds to particular features. So for example there are 3 cloud functions to run PvE and 8 to support PvP. All of them are called in particular order and are not available for external calls. 
+All cloud functions should have unique names satisfying regexp `#!js /^[$A-Z_][0-9A-Z_$]*$/i`({>>just camel-case without extra chars<<}). Moreover, Goblin Backend has a list of predefined cloud functions that correspond to particular features. So, for example, there are 3 cloud functions to run PvE and 8 to support PvP. All of them are called in a particular order and are not available for external calls. 
 
 !!! abstract "Further we see the list of predefined cloud functions with descriptions"
-	- `initContext.js` - is called automatically when cluster starts to pre init some global variables through global property `#!js glob` available from all cloud functions. It's not necessary and moreover recommended to call custom cloud function directly from other cloud functions. ==Disabled by default==;
-	- `createNewProfile.js` - is called automatically before creation new profile. It should return an object as primary filling for new profile;
-	- `mutateProfile.js` - a special and very useful cloud function called every time before accessing any player's profile. Allows to mutate profile before use {>>find out more about mutation at Profile section<<};
-	- `onGetProfile.js` - is called automatically before getting profile. Useful to do some system modifications on it. Not necessary to implement. ==Called after mutation==. Also session cache is available via `#!js session` global variable - it's a great place to heat up your cache;
-	- `pveInit.js` - is called on `#!js gbaseAPI.pve.begin()` and used to init operative gameplay model;
-	- `pveAct.js` - is called on `#!js gbaseAPI.pve.act()`. Used to make updates on gameplay model and check whether game is over;
-	- `pveFinalize.js` - is called automatically after `pveAct.js` if it said that game is over. Used to persist some profiles updates and battle journal entries;
-	- `pvpGeneratePayload.js` - is called before PvP starts to generate opponent's payload. Need to check argument `#!js args.isA` - to check whether it's about player A or B. And argument `#!js args.isBot` in case you're playing versus self. It's up to you to generate whatever payload you want;
-	- `pvpInitGameplayModel.js` - is called before PvP starts and after payloads generation to generate operative gameplay model it self. Payloads are available at `#!js args.payloadA` and `#!js args.payloadB`;
-	- `pvpConnectionHandler.js` - is called automatically against just connected opponent to form a message for him;
-	- `pvpDisconnectionHandler.js` - is called automatically against just disconnected opponent to form a message for his opponent;
-	- `pvpTurnHandler.js` - handles every single _turn message_. Results with 3 arguments: modified gameplay model, message for opponent A and message for opponent B;
-	- `pvpCheckGameOver.js` - called right after `pvpTurnHandler.js` to check whether game is over. Checks incoming argument `#!js args.theModel` and outputs the only one argument - game over message: if presence and negative value(mostly `#!js null`) if game is not over;
-	- `pvpGameOverHandler.js` - called right after `pvpCheckGameOver.js` in case of positive response. Modify profiles and add battle journal entries here;
-	- `pvpAutoCloseHandler.js` - also a finalizing cloud function but called in case of automatical game over. E.g. timeout of one or both opponents. Inputs arguments `#!js args.lagA` and `#!js args.lagB` representing opponent's time passed since last ping or action. Okay to determine causer of game over in case you want to punish him. Outputs 2 arguments - a messages for opponents that would be sent if possible;
-	- `onMatchmaking.js` - in case of authoritarian matchmaking(configured on backend) all arguments goes into this cloud function firstly to give you control over matchmaking. Outputs these three arguments.
+    - `initContext.js` - is called automatically when the cluster starts to pre init some global variables through global property `#!js glob` available from all cloud functions. It's not necessary and moreover recommended to call custom cloud functions directly from other cloud functions. ==Disabled by default==;
+    - `createNewProfile.js` - is called automatically before creating a new profile. It should return an object as a primary filling for new profile;
+    - `mutateProfile.js` - a special and very useful cloud function called every time before accessing any player's profile. Allows to mutate profile before use {>>find out more about mutation at Profile section<<};
+    - `onGetProfile.js` - is called automatically before getting a profile. Useful to do some system modifications on it. Not necessary to implement. ==Called after mutation==. Also, session cache is available via `#!js session` global variable - it's a great place to heat up your cache;
+    - `pveInit.js` - is called on `#!js gbaseAPI.pve.begin()` and used to init operative gameplay model;
+    - `pveAct.js` - is called on `#!js gbaseAPI.pve.act()`. Used to make updates on the gameplay model and check whether the game is over;
+    - `pveFinalize.js` - is called automatically after `pveAct.js` if it said that game is over. Used to persist some profiles updates and battle journal entries;
+    - `pvpGeneratePayload.js` - is called before PvP starts to generate an opponent's payload. Need to check argument `#!js args.isA` - to check whether it's about player A or B. And argument `#!js args.isBot` in case you're playing versus self. It's up to you to generate whatever payload you want;
+    - `pvpInitGameplayModel.js` - is called before PvP starts and after payloads generation to generate operative gameplay model itself. Payloads are available at `#!js args.payloadA` and `#!js args.payloadB`;
+    - `pvpConnectionHandler.js` - is called automatically against just connected opponent to form a message for him;
+    - `pvpDisconnectionHandler.js` - is called automatically against just disconnected opponent to form a message for his opponent;
+    - `pvpTurnHandler.js` - handles every single _turn message_. Results with 3 arguments: modified gameplay model, message for opponent A and message for opponent B;
+    - `pvpCheckGameOver.js` - called right after `pvpTurnHandler.js` to check whether the game is over. Checks incoming argument `#!js args.theModel` and outputs the only one argument - game over message: if presence and negative value(mostly `#!js null`) if the game is not over;
+    - `pvpGameOverHandler.js` - called right after `pvpCheckGameOver.js` in case of positive response. Modify profiles and add battle journal entries here;
+    - `pvpAutoCloseHandler.js` - also a finalizing cloud function but called in case of automatical game over. E.g. timeout of one or both opponents. Inputs arguments `#!js args.lagA` and `#!js args.lagB` representing an opponent's time passed since last ping or action. Okay to determine causer of the game over in case you want to punish him. Outputs 2 arguments - messages for opponents that would be sent if possible;
+    - `onMatchmaking.js` - in case of authoritarian matchmaking(configured on the backend) all arguments go into this cloud function firstly to give you control over matchmaking. Output these three arguments.
 
 !!! hint "Goblin Cloud instance already equipped with `onMatchmaking.js` cloud function"
 	All the arguments provided through `#!js clientParams` and practically it searches forward or backward depending on request body.

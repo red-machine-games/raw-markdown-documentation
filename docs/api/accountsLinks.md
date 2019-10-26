@@ -1,6 +1,6 @@
 # Accounts Linkage
 
-You can link account previously created with `gClientId` and `gClientSecret` with ==Facebook==, ==VK.com== or ==OK.ru== social profile. You just need to provide token from social network's SDK. This procedure will find already created profile by any account that used appropriate social network credentials. Or will just make new profile. Originaly created profile will be still alive but you will be able to access it only after unlinking your account from any social profiles. After this procedure you need to sign in again. It's possible to link by social token without creating new profile - your account become bi-login(gClientId/gClientSecret or social token)
+You can link account previously created with `gClientId` and `gClientSecret` with ==Facebook==, ==VK.com== or ==OK.ru== social profile. You just need to provide a token from the social network's SDK. This procedure will find already created profile by any account that used appropriate social network credentials. Or will just make a new profile. Originally created profile will be still alive but you will be able to access it only after unlinking your account from any social profiles. After this procedure, you need to sign in again. It's possible to link by social token without creating a new profile - your account become bi-login(gClientId/gClientSecret or social token)
 
 ## Link Facebook profile
 
@@ -132,7 +132,7 @@ gbaseApi.account.hasFbProfile(fbToken, (err, response) => {
 
 ## Link VK.com profile without creating new one
 
-Works only if you don't have any VK.com profile previously created. It's natural to call `hasVkProfile` firts for check and link after. Makes your account bi-login i.e. login with id/secret as well as with VK.com token. Also no new profile will be created hence no progress "lost". Should warn that `unlinkSocialProfile` will not unlink bi-login account any more.
+Works only if you don't have any VK.com profile previously created. It's natural to call `hasVkProfile` first for check and link after. Makes your account bi-login i.e. login with id/secret as well as with VK.com token. Also, no new profile will be created hence no progress "lost". Should warn that `unlinkSocialProfile` will not unlink bi-login account anymore.
 ```javascript
 var gbaseApi = new Gbase.GbaseApi('some-proj', 'dev', 'some HMAC secret', Gbase.GbaseApi.PLATFORM.ANDROID, '0.0.1');
 

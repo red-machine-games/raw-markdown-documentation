@@ -2,22 +2,22 @@
 
 ## Any developer-defined cloud function
 
-==The idea of cloud functions is to bring the power to incapsulate any logic into cloud==. You can chase several goals using cloud functions, separately or in conjunction:
+==The idea of cloud functions is to bring the power to encapsulate any logic into cloud==. You can chase several goals using cloud functions, separately or in conjunction:
 
 - Simply make domain logic authoritarian to prevent unfair logic substitution. The big community now has many tools to make it real, especially if you deployed on web stack;
-- To provide atomicity for sets of reads and writes. If you develop something more complicated than school calculator your case will look like this: you read something, you doing some check and logic on read data, and then you write, and your real case may be far bigger. All reads and writes corresponds to separate http-requests, the one for each step and you don't need to be a rocket scientist to guess that no atomicity here. Cloud functions can give you that read-check-whatever-write-etc atomicity due to employed _ACID engine_;
-- To validate store receipts. Even the little app will face the people that fakes receipts. It's easy to cheat on client by faking store backend response and making client to communicate with it. Backend-side validation is unreachable for this trick and also done with _ACID engine_;
-- To rid client of heavy calculations.
+- To provide atomicity for sets of reads and writes. If you develop something more complicated than the school calculator your case will look like this: you read something, you doing some check and logic on reading data, and then you write, and your real case may be far bigger. All reads and writes correspond to separate HTTP-requests, the one for each step and you don't need to be a rocket scientist to guess that no atomicity here. Cloud functions can give you that read-check-whatever-write-etc atomicity due to employed _ACID engine_;
+- To validate store receipts. Even the little app will face the people that fake receipts. It's easy to cheat on the client by faking store backend response and making the client communicate with it. Backend-side validation is unreachable for this trick and also done with _ACID engine_;
+- To rid the client of heavy calculations.
 
-Back to code. First of all you should define whether this cloud function will be called externally or internally, or both. Place `#!js access.onlyExternal();` or `#!js access.onlyInternal();` on top of code. You don't need to place it on predefined cloud function because they are unreachable in both ways. Then let's check 2 important variables: `#!js clientParams` and `#!js args`. `#!js clientParams` has data from sender(sended through network protocol or put into `#!js await run('cloudFunctionName', clientParams)`). `#!js args` has useful domain args provided by Goblin Backend platform. By default you'll find: `#!js clientPlatform` and `#!js clientVersion`(provided by client on GbaseApi initialization). Then we need to get lock for player(s) to read and/or write: `#!js await lock.self()` or analogue. at the end we should call appropriate response function(e.g. `#!js FunctionResponse`) with `#!js return` statement to stop the execution.
+Back to code. First of all, you should define whether this cloud function will be called externally or internally, or both. Place `#!js access.onlyExternal();` or `#!js access.onlyInternal();` on top of code. You don't need to place it on predefined cloud functions because they are unreachable in both ways. Then let's check 2 important variables: `#!js clientParams` and `#!js args`. `#!js clientParams` has data from sender(send through network protocol or put into `#!js await run('cloudFunctionName', clientParams)`). `#!js args` has useful domain args provided by Goblin Backend platform. By default you'll find: `#!js clientPlatform` and `#!js clientVersion`(provided by client on GbaseApi initialization). Then we need to get the lock for the player(s) to read and/or write: `#!js await lock.self()` or analog. at the end we should call appropriate response function(e.g. `#!js FunctionResponse`) with `#!js return` statement to stop the execution.
 
 !!! warning "Some general hints very desirable for implementation"
-    - **Try to minimise database workload!** Call reads and writes as rare as possible, also retrieve as little as possible data, organize it wisely to read and write all needed by one call. Furthermore think about total size of profile and strictly try to not to put useless data there - for example some general data that could store at Balance.json static file, totally useless or deprecated data;
+    - **Try to minimize database workload!** Call reads and writes as rare as possible, also retrieve as little as possible data, organize it wisely to read and write all needed by one call. Furthermore, think about the total size of profile and strictly try to not to put useless data there - for example, some general data that could store at Balance.json static file, totally useless or deprecated data;
     - Use `#!js session` global variable to cache highly frequent data into operative memory;
     - Do not relock without strict reason and do not lock useless human IDs;
     - Use log only for debugging, remove these lines as soon as no longer needed;
     - Do not use `#!js setTimeout`;
-    - If you need to develop some gameplay timers - just use timestamps: use global variable `#!js now`(represents timestamp of cloud function call with milliseconds), persist, read and compare it;
+    - If you need to develop some gameplay timers - just use timestamps: use global variable `#!js now`(represents timestamp of a cloud function call with milliseconds), persist, read and compare it;
     - use `#!js ===` instead of `#!js ==`;
     - Don't forget that all writes into database are made ==**AFTER**== execution;
     - Share responsibilities with internal run only cloud functions and `#!js run` API;
@@ -29,16 +29,16 @@ This one should be as simple as possible, just to represent actual domain profil
 
 ## Developing `mutateProfile.js` cloud function
 
-Here you should implement ==mutation chain== method. When you have own domain schema for profiles it most likely to update along with client itself, so here are 2 things to implement chain of mutation: **profile version** and **mutateProfile.js cloud function**.
+Here you should implement ==mutation chain== method. When you have your own domain schema for profiles it most likely to update along with the client itself, so here are 2 things to implement chain of mutation: **profile version** and **mutateProfile.js cloud function**.
 
 !!! example "Here is algorithm"
-    1. Get profile's version;
+    1. Get a profile's version;
     2. Add new mutation functions on demand;
-    3. Each function must compare profile's version and desirable, make updated of desirable more than actual;
+    3. Each function must compare the profile's version and desirable, make updated of desirable more than actual;
     4. Call the next mutation function in a row;
     5. Set version to the most actual after chain.
 
-_Here's example of mutations chain_:
+_Here's an example of mutations chain_:
 ```javascript
 const ACTUAL_PROFILE_VER = 4;
 
@@ -80,14 +80,14 @@ if(ver < ACTUAL_PROFILE_VER){   // Let's skip mutation if we surely know that pr
 
 ## Developing `onGetProfile.js` cloud function
 
-Use it for small service profile changes. Differs from `mutateProfile.js` in that it called after mutation and only on getting profile. Organize limited campaigns with free loot boxes and many more using this cloud function and global varialbe `#!js now` to determine campaign borders.
+Use it for small service profile changes. It differs from `mutateProfile.js` in that it called after mutation and only on getting a profile. Organize limited campaigns with free loot boxes and many more using this cloud function and global variable `#!js now` to determine campaign borders.
 
 ## Developing PvE cloud functions
 
-As mentioned before PvE mechanism depends on 3 cloud functions implemented by developer: `pveInit.js`, `pveAct.js` and `pveFinalize.js`. Consider them as set of logical steps with some share from operative memory. Function `pveInit.js` should return freshly made battle model and return it via `#!js PveInitResponse`, functions `pveAct.js` and `pveFinalize.js` has `#!js args.battleModel` global argument to work with it. 
+As mentioned before the PvE mechanism depends on 3 cloud functions implemented by developer: `pveInit.js`, `pveAct.js` and `pveFinalize.js`. Consider them as a set of logical steps with some share from operative memory. Function `pveInit.js` should return freshly made battle model and return it via `#!js PveInitResponse`, functions `pveAct.js` and `pveFinalize.js` has a `#!js args.battleModel` global argument to work with it. 
 
 !!! abstract "Further listed some hints and theses to help you get along with this cycle"
-    - Function `pveAct.js` doesn't have: `#!js selfHumanId` global variable, access to profiles, ratings, matchmaking and locking;
+    - Function `pveAct.js` doesn't have: `#!js selfHumanId` global variable, access to profiles, ratings, matchmaking, and locking;
     - Consider `pveAct.js` cloud function as high frequently called, so you should keep it as lightweight as possible;
     - Battle model(`#!js args.battleModel` global argument) is the core of this cycle - ==**do not ignore it**==;
     - If you have shared game library code({>>maybe transpiled from another language<<}) implement it as a set of internal cloud functions and use `#!js run()` API;
@@ -131,24 +131,24 @@ and
 
 ## Developing PvP cloud functions
 
-Player versus player(_or player versus self_) gameplay ==depends on 8 cloud functions==: `pvpGeneratePayload.js`, `pvpInitGameplayModel.js`, `pvpTurnHandler.js`, `pvpConnectionHandler.js`, `pvpDisconnectionHandler.js`, `pvpCheckGameOver.js`, `pvpGameOverHandler.js` and `pvpAutoCloseHandler.js`. All of them called by Goblin Backend automatically according to particular events, you don't need to think about calling them, but you should think about life cycle of pvp gameplay and circumstances.
+Player versus player(_or player versus self_) gameplay ==depends on 8 cloud functions==: `pvpGeneratePayload.js`, `pvpInitGameplayModel.js`, `pvpTurnHandler.js`, `pvpConnectionHandler.js`, `pvpDisconnectionHandler.js`, `pvpCheckGameOver.js`, `pvpGameOverHandler.js` and `pvpAutoCloseHandler.js`. All of them called by Goblin Backend automatically according to particular events, you don't need to think about calling them, but you should think about the life cycle of PvP gameplay and circumstances.
 
-!!! example "Here we look at the decomposition of pvp gameplay life cycle including matchmaking"
+!!! example "Here we look at the decomposition of PvP gameplay life cycle including matchmaking"
     1. Start searching for opponent by calling `#!js matchmaking.searchPvpOpponent();` - your matchmaking state changes inside of system;
-    2. Accept or decline found opponent by calline either `#!js matchmaking.acceptPvpMatch();` or `#!js matchmaking.declinePvpMatch();` - updates your matchmaking state;
+    2. Accept or decline found opponent by calling either `#!js matchmaking.acceptPvpMatch();` or `#!js matchmaking.declinePvpMatch();` - updates your matchmaking state;
     3. In case of acception, wait for opponent to accept by calling blocking function `#!js matchmaking.waitForPvpOpponentToAccept()`;
-    4. Make a new connection to picked gameplay room. Gameplay room is a real host separated from the main cluster with it's own domain address and operative subsystem. To connect you use so-called *booking key* using route `/releaseBooking`. Furthermore if you're playing versus self(fictive opponent or bot) player B's payload made here by calling `pvpGeneratePayload.js` cloud function;
-    5. Set your payload by sending `/setPayload` POST requests with payload json body. If direct profile exposure is disabled payload be generated by calling `pvpGeneratePayload.js` cloud function. Global arguments `#!js args.fromHid`, `#!js args.isA` and `#!js args.isBot` are available;
+    4. Make a new connection to the picked gameplay room. The gameplay room is a real host separated from the main cluster with its own domain address and operative subsystem. To connect you use so-called *booking key* using route `/releaseBooking`. Furthermore, if you're playing versus self(a fictive opponent or bot) player B's payload made here by calling `pvpGeneratePayload.js` cloud function;
+    5. Set your payload by sending `/setPayload` POST requests with payload JSON body. If direct profile exposure is disabled payload be generated by calling `pvpGeneratePayload.js` cloud function. Global arguments `#!js args.fromHid`, `#!js args.isA` and `#!js args.isBot` are available;
     6. Set ready by sending `/setReady` request. Gameplay model made here by calling `pvpInitGameplayModel.js` cloud function;
-    7. Make a web socket connection with gameplay room, it causes `pvpConnectionHandler.js` cloud function call. Furthermore every connection will cause this call;
+    7. Make a web socket connection with the gameplay room, it causes `pvpConnectionHandler.js` cloud function call. Furthermore, every connection will cause this call;
     8. Destroy web socket connection with gameplay room, it will cause `pvpDisconnectionHandler.js` cloud function call;
-    9. Send turn messages over web socket connection, it will cause `pvpTurnHandler.js` cloud function call which determines how to modify gameplay model and how to respond to opponents. Furthermore all turn messages must be signed with hash and contain serial number from 1 to infinity. All turn messages are get into pair queue excluding possibility of running 2 `pvpTurnHandler.js` cloud functions at the same time;
-    10. Destory web socket connection and wait enough to gameplay ttl be out and it will cause `pvpAutoCloseHandler.js` cloud function call which determines what to do and what to respond to opponents(if any chanses);
+    9. Send turn messages over a WebSocket connection, it will cause `pvpTurnHandler.js` cloud function call which determines how to modify the gameplay model and how to respond to opponents. Furthermore, all turn messages must be signed with hash and contain a serial number from 1 to infinity. All turn messages are getting into pair queue excluding the possibility of running 2 `pvpTurnHandler.js` cloud functions at the same time;
+    10. Destroy WebSocket connection and wait for enough to gameplay ttl be out and it will cause `pvpAutoCloseHandler.js` cloud function call which determines what to do and what to respond to opponents(if any chances);
     11. A `pvpCheckGameOver.js` cloud function called automatically every time after yet another `pvpTurnHandler.js` cf call. It checks whether it's time to finish;
-    12. If so, `pvpGameOverHandler.js` cloud function called which determines what to do due to the finish and what to response to opponents.
+    12. If so, `pvpGameOverHandler.js` cloud function called which determines what to do due to the finish and what to respond to opponents.
 
 ### Developing `pvpGeneratePayload.js` cloud function
-A gameplay model is made of opponent's payloads - payload generation comes first. Use this cloud function to get data from profiles, watch global arguments: `#!js args.fromHid` - to see for whom payload should be made, `#!js args.isA` - to know whether target player is opponent A(is opponent B if `#!js false`), `#!js args.isBot` - to know whether target opponent is bot. If POST body provided on `/setPayload` request it will be available at `#!js args.fromObject` global argument. {>>Usually if you playing versus fictive opponent you occupy opponent A and bot is always B<<}.
+A gameplay model is made of opponent's payloads - payload generation comes first. Use this cloud function to get data from profiles, watch global arguments: `#!js args.fromHid` - to see for whom payload should be made, `#!js args.isA` - to know whether target player is opponent A(is opponent B if `#!js false`), `#!js args.isBot` - to know whether the target opponent is a bot. If POST body provided on `/setPayload` request it will be available at `#!js args.fromObject` global argument. {>>Usually if you playing versus fictive opponent you occupy opponent A and the bot is always B<<}.
 
 !!! warning
     In terms of backend _bot_ - is not an actual AI. He'll not play with you out of the box. Used just as an abstraction doing nothing until you'll implement bot's logic with cloud functions by your self.
@@ -163,20 +163,20 @@ if(args.isA){
     PvpResponse({ some: 'payload b', aPayload: args.fromObject });
 }
 ```
-Here we set a simple payload data with `aPayload` node. It filled with POST body data. {>>It's not authoritarian but at least something<<}. You can access profiles data here on your own. ==At this cloud function you can read and write only own profile==.
+Here we set a simple payload data with `aPayload` node. It filled with POST body data. {>>It's not authoritarian but at least something<<}. You can access profiles data here on your own. ==At this cloud function you can read and write only your own profile==.
 
 ### Developing `pvpInitGameplayModel.js` cloud function
-Is called automatically when both payloads ready and starts gameplay itself after. The next global arguments available: `#!js args.payloadA` - opponent A's payload, `#!js args.payloadB` - opponent B's payload and `#!js args.randomSeed` - is a random seed for **Mersenne twister** algorithm. Access to databased is not available here so you should be sure that all appropriate data been taken at `pvpGeneratePayload.js`.
+It is called automatically when both payloads ready and start gameplay itself after. The next global arguments available: `#!js args.payloadA` - opponent A's payload, `#!js args.payloadB` - opponent B's payload and `#!js args.randomSeed` - is a random seed for **Mersenne twister** algorithm. Access to databased is not available here so you should be sure that all appropriate data been taken at `pvpGeneratePayload.js`.
 
 With PvP enabled the code base is filled with `pvpGeneratePayload.js` cloud function by default:
 ```javascript
 PvpResponse({ playerA: args.payloadA, playerB: args.payloadB, playerA_Sequence: 0, playerB_Sequence: 0 });
 ```
-Here we just put payloads and sequence values, we will incmenet them with turn messages. It's very casual but in real life you can use shared code library to init complicated gameplay models.
+Here we just put payloads and sequence values, we will increment them with turn messages. It's very casual but in real life, you can use a shared code library to init complicated gameplay models.
 
 ### Developing `pvpConnectionHandler.js` cloud function
 
-Is called automatically when any opponent creates web socket connection. The next global arguments available: `#!js args.theModel` - previously generated gameplay model, `#!js args.isA` - a boolean whether player A or B connects, `#!js args.startTs` - a timestamp of gameplay begin, `#!js args.randomSeed` - previously generated  random seed, `#!js args.playerTurnA` - opponent A's turn message counter to generate turn message sign and `#!js args.playerTurnB` - opponent B's turn message counter to generate turn message sign. All this data can be useful to connected opponent because his client maybe crashed and lost all the data. CF must be ended with `#!js PvpConnectionHandler`.
+It is called automatically when any opponent creates a web socket connection. The next global arguments available: `#!js args.theModel` - previously generated gameplay model, `#!js args.isA` - a boolean whether player A or B connects, `#!js args.startTs` - a timestamp of gameplay begins, `#!js args.randomSeed` - previously generated random seed, `#!js args.playerTurnA` - opponent A's turn message counter to generate turn message sign and `#!js args.playerTurnB` - opponent B's turn message counter to generate turn message sign. All this data can be useful to the connected opponent because his client maybe crashed and lost all the data. CF must be ended with `#!js PvpConnectionHandler`.
 
 With PvP enabled the code base is filled with `pvpConnectionHandler.js` cloud function by default:
 ```javascript
@@ -190,11 +190,11 @@ PvpConnectionHandler({
     }
 }, null);
 ```
-Here we send all the data to connected player but nothing to opponent due to he anyway will see the service message about continuation.
+Here we send all the data to the connected player but nothing to the opponent due to he anyway will see the service message about continuation.
 
 ### Developing `pvpDisconnectionHandler.js` cloud function
 
-Is the opposite of connection handler and is called automatically when any opponent loses web socket connection. The next global arguments available: `#!js args.theModel` - previously generated gameplay model, `#!js args.disconnectedIsA` - a boolean whether player A or B disconnects, `#!js args.playerTurnA` - opponent A's turn message counter to generate turn message sign and `#!js args.playerTurnB` - opponent B's turn message counter to generate turn message sign. CF must be ended with `#!js PvpDisconnectionHandler`.
+It is the opposite of the connection handler and is called automatically when any opponent loses a web socket connection. The next global arguments available: `#!js args.theModel` - previously generated gameplay model, `#!js args.disconnectedIsA` - a boolean whether player A or B disconnects, `#!js args.playerTurnA` - opponent A's turn message counter to generate turn message sign and `#!js args.playerTurnB` - opponent B's turn message counter to generate turn message sign. CF must be ended with `#!js PvpDisconnectionHandler`.
 
 With PvP enabled the code base is filled with `pvpConnectionHandler.js` cloud function by default:
 ```javascript
@@ -204,11 +204,11 @@ PvpDisconnectionHandler({
     theModel: args.theModel
 });
 ```
-Here we send useful data to still connected opponent, but he anyway will see the serivce message about going on pause.
+Here we send useful data to still connected opponent, but he anyway will see the service message about going on pause.
 
 ### Developing `pvpTurnHandler.js` cloud function
 
-Reacts on each turn message(not direct message) when it's been taken from pair queue. The next global arguments available: `#!js args.theModel` - previously generated gameplay model, `#!js args.isA` - a boolean whether player A or B sent that message, `#!js args.theMessage` - the message itself, `#!js args.playerTurnA` - opponent A's turn message counter to generate turn message sign and `#!js args.playerTurnB` - opponent B's turn message counter to generate turn message sign. CF must be ended with `#!js PvpMessageHandler` passing modified gameplay model(or negative argument if no modifications), a message that will be sended to opponent A and message that will be sended to opponent B.
+Reacts on each turn message(not direct message) when it's been taken from pair queue. The next global arguments available: `#!js args.theModel` - previously generated gameplay model, `#!js args.isA` - a boolean whether player A or B sent that message, `#!js args.theMessage` - the message itself, `#!js args.playerTurnA` - opponent A's turn message counter to generate turn message sign and `#!js args.playerTurnB` - opponent B's turn message counter to generate turn message sign. CF must be ended with `#!js PvpMessageHandler` passing modified gameplay model(or negative argument if no modifications), a message that will be sent to opponent A and message that will be sent to opponent B.
 
 With PvP enabled the code base is filled with `pvpTurnHandler.js` cloud function by default:
 ```javascript
@@ -229,21 +229,21 @@ if(args.theMessage.gameOver){
     }
 }
 ```
-Here CF awaits for 4 nodes: `send` - what to send to opponent, `modify` - set of root nodes of gameplay model to modify, `gameOver` - says that it is time and `battleJournal` - an any-schema data to persist into battle journal. To diversify responsibilities we don't handle game over here, we only can change the gameplay model to `{ gameIsOver: true, ... }`. After that this model goes strict to `pvpCheckGameOver.js` cloud function.
+Here CF awaits for 4 nodes: `send` - what to send to the opponent, `modify` - set of root nodes of gameplay model to modify, `gameOver` - says that it is time and `battleJournal` - an any-schema data to persist into the battle journal. To diversify responsibilities we don't handle game over here, we only can change the gameplay model to `{ gameIsOver: true, ... }`. After that, this model goes strict to `pvpCheckGameOver.js` cloud function.
 
 ### Developing `pvpCheckGameOver.js` cloud function
 
-It has narrow resposibility set just to say whether game is over by checking the gameplay model. Global argument `#!js args.theModel` is the only available here.
+It has a narrow responsibility set just to say whether the game is over by checking the gameplay model. Global argument `#!js args.theModel` is the only available here.
 
 With PvP enabled the code base is filled with `pvpCheckGameOver.js` cloud function by default:
 ```javascript
 PvpResponse(args.theModel.gameIsOver ? true : null);
 ```
-To consider game over just return plain object or any positive value
+To consider game over just returns a plain object or any positive value
 
 ### Developing `pvpGameOverHandler.js` cloud function
 
-Handles game over right after `pvpCheckGameOver.js`. The next global arguments available: `#!js args.opponentIsBot` - whether opponent is fictive, `#!js args.theModel` - previously generated gameplay model, `#!js args.humanIdA` - opponent A's Human ID and `#!js args.humanIdB` - opponent B's Human ID. During this CF you can get and modify profiles, ratings and add battle jounrla entries. You should finish execution by calling `#!js PvpResponse` but no argument required.
+Handles game over right after `pvpCheckGameOver.js`. The next global arguments available: `#!js args.opponentIsBot` - whether opponent is fictive, `#!js args.theModel` - previously generated gameplay model, `#!js args.humanIdA` - opponent A's Human ID and `#!js args.humanIdB` - opponent B's Human ID. During this CF you can get and modify profiles, ratings and add battle journal entries. You should finish execution by calling `#!js PvpResponse` but no argument required.
 
 With PvP enabled the code base is filled with `pvpGameOverHandler.js` cloud function by default:
 ```javascript
@@ -252,7 +252,7 @@ if(args.theModel.battleJournal){
 }
 PvpResponse();
 ```
-Here we write a battle journal entry only if end turn message contained `battleJournal` node. No profile modifications made. It's totally not authoritarian but at least something. Ofcourse you can do it maximum authoritarian on your own.
+Here we write a battle journal entry only if the end turn message contained `battleJournal` node. No profile modifications made. It's totally not authoritarian but at least something. Of course you can do it maximum authoritarian on your own.
 
 ### Developing `pvpAutoCloseHandler.js` cloud function
 
