@@ -1,6 +1,6 @@
 # A raw markdown documentation
 
-Find out compiled here: https://gbase.tech/doc
+Find out compiled here: https://goblinserver.com/doc
 
 ## Table of contents
 
